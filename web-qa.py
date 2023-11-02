@@ -52,7 +52,8 @@ def get_hyperlinks(url):
     # Try to open the URL and read the HTML
     try:
         # Open the URL and read the HTML
-        with urllib.request.urlopen(url) as response:
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req) as response:
 
             # If the response is not HTML, return an empty list
             if not response.info().get('Content-Type').startswith("text/html"):
