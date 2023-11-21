@@ -80,6 +80,10 @@ def get_domain_hyperlinks(local_domain, url):
     for link in set(get_hyperlinks(url)):
         clean_link = None
 
+        # If the link is empty, skip it
+        if not link:
+            continue
+
         # If the link is a URL, check if it is within the same domain
         if re.search(HTTP_URL_PATTERN, link):
             # Parse the URL and check if the domain is the same
