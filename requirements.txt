@@ -36,7 +36,7 @@ matplotlib-inline==0.1.6
 multidict==6.0.4
 nest-asyncio==1.5.6
 numpy==1.24.1
-openai==0.26.1
+openai==1.3.5
 packaging==23.0
 pandas==1.5.2
 parso==0.8.3
@@ -72,8 +72,9 @@ tornado==6.3.3
 tqdm==4.64.1
 traitlets==5.8.1
 transformers==4.30.0
-typing_extensions==4.4.0
+typing_extensions==4.5.0
 urllib3==1.26.13
 wcwidth==0.2.5
 yarg==0.1.9
 yarl==1.8.2
+python-dotenv==1.0.0
