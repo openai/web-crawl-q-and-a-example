@@ -1,3 +1,4 @@
 .env
 crawler
-text
+.python-version
+processed
