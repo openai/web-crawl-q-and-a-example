@@ -14,7 +14,6 @@ import pandas as pd
 import tiktoken
 import openai
 import numpy as np
-from openai.embeddings_utils import distances_from_embeddings, cosine_similarity
 from ast import literal_eval
 
 # Regex pattern to match a URL
@@ -315,6 +314,9 @@ df.head()
 ################################################################################
 ### Step 12
 ################################################################################
+def cosine_distance(vec1, vec2):
+    """Calculate the cosine distance between two vectors."""
+    return 1 - np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))
 
 def create_context(
     question, df, max_len=1800, size="ada"
@@ -327,8 +329,7 @@ def create_context(
     q_embeddings = openai.Embedding.create(input=question, engine='text-embedding-ada-002')['data'][0]['embedding']
 
     # Get the distances from the embeddings
-    df['distances'] = distances_from_embeddings(q_embeddings, df['embeddings'].values, distance_metric='cosine')
-
+    df['distances'] = df['embeddings'].apply(lambda x: cosine_distance(q_embeddings, x))
 
     returns = []
     cur_len = 0
