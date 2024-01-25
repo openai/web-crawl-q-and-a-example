@@ -12,7 +12,9 @@ from urllib.parse import urlparse
 import os
 import pandas as pd
 import tiktoken
-import openai
+from openai import OpenAI
+
+client = OpenAI()
 import numpy as np
 from ast import literal_eval
 
@@ -298,7 +300,7 @@ df.n_tokens.hist()
 # Note that you may run into rate limit issues depending on how many files you try to embed
 # Please check out our rate limit guide to learn more on how to handle this: https://platform.openai.com/docs/guides/rate-limits
 
-df['embeddings'] = df.text.apply(lambda x: openai.Embedding.create(input=x, engine='text-embedding-ada-002')['data'][0]['embedding'])
+df['embeddings'] = df.text.apply(lambda x: client.embeddings.create(input=x, model='text-embedding-ada-002').data[0].embedding)
 df.to_csv('processed/embeddings.csv')
 df.head()
 
@@ -326,7 +328,7 @@ def create_context(
     """
 
     # Get the embeddings for the question
-    q_embeddings = openai.Embedding.create(input=question, engine='text-embedding-ada-002')['data'][0]['embedding']
+    q_embeddings = client.embeddings.create(input=question, model='text-embedding-ada-002').data[0].embedding
 
     # Get the distances from the embeddings
     df['distances'] = df['embeddings'].apply(lambda x: cosine_distance(q_embeddings, x))
@@ -376,7 +378,7 @@ def answer_question(
 
     try:
         # Create a completions using the questin and context
-        response = openai.Completion.create(
+        response = client.completions.create(
             prompt=f"Answer the question based on the context below, and if the question can't be answered based on the context, say \"I don't know\"\n\nContext: {context}\n\n---\n\nQuestion: {question}\nAnswer:",
             temperature=0,
             max_tokens=max_tokens,
@@ -386,7 +388,7 @@ def answer_question(
             stop=stop_sequence,
             model=model,
         )
-        return response["choices"][0]["text"].strip()
+        return response.choices[0].text.strip()
     except Exception as e:
         print(e)
         return ""
